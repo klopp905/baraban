@@ -152,7 +152,7 @@ else
 				
 				Drive1.PosDrumAng = (PosAdc / 4096.0f) * 360.0f;
 				
-				Drive1.PosDrumAdr = (uint16_t)(round(Drive1.PosDrumAng / Drive1.SectorSize));
+				Drive1.PosDrumAdr = (uint16_t)(Drive1.PosDrumAng / Drive1.SectorSize);
 				//Drive1.PosDrumAdr = (uint16_t)(Drive1.PosDrumAng / Drive1.SectorSize);
 	
 				Drive1.RefDrumAng = ( (float)Drive1.RefDrumAdr * Drive1.SectorSize);  //
