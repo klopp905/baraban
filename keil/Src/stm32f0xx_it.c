@@ -308,9 +308,10 @@ void SysTick_Handler(void)
 			if( positionWaitCnt >= TIMEOUT_POSITION ) {
 				// ошибка таймаута
 				//HAL_UART_AbortReceive_IT(&UART_HANDLER);											// остановка приема
-				positionWait = 1;																							// признак ожидание позиции
-				positionWaitCnt = 0;
-				HAL_UART_Receive_IT (&UART_HANDLER, (uint8_t *)BufferRX, 1);	// запуск приема
+				ClrBit(&StatusRegister, PRT_WAIT_ANS2);							// сбросим ожидание ANS2
+				SetAnswer2(&Packet, PRT_ANS2_ERR );							// формируем пакет с Ans2 ERR
+				positionWait = 1;															// признак ожидание позиции
+					positionWaitCnt = 0;
 			}
 		}		
 	
