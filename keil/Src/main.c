@@ -155,7 +155,7 @@ else
 				Drive1.PosDrumAdr = (uint16_t)(Drive1.PosDrumAng / Drive1.SectorSize);
 				//Drive1.PosDrumAdr = (uint16_t)(Drive1.PosDrumAng / Drive1.SectorSize);
 	
-				Drive1.RefDrumAng = ( (float)Drive1.RefDrumAdr * Drive1.SectorSize);  //
+				Drive1.RefDrumAng = findNearestAngle(Drive1.RefDrumAdr);
 									
 
         flagAS5045 = 0;

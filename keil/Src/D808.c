@@ -341,29 +341,22 @@ float angleDifference(float a, float b) {
 // Функция для поиска ближайшего к текущему положению угла
 float findNearestAngle(uint16_t adr) {
 
-    // Для adr = 0 всегда возвращаем -180°
-    if (adr == 0) {
-        return -180.0f;
-    }
-	
-    // Вычисляем три возможных угла
+    float target = (float)adr * Drive1.SectorSize;
     float angles[3];
-    angles[0] = normalizeAngle(adr * Drive1.SectorSize - ANGLE_OFFSET);
-    angles[1] = normalizeAngle((adr + SIZE) * Drive1.SectorSize - ANGLE_OFFSET);
-    angles[2] = normalizeAngle((adr + 2 * SIZE) * Drive1.SectorSize - ANGLE_OFFSET);
+    angles[0] = target - 360.0f;
+    angles[1] = target;
+    angles[2] = target + 360.0f;
 
-    // Находим угол с минимальным расстоянием до текущего положения
     int minIndex = 0;
-    float minDistance = fabs(angleDifference(angles[0], Drive1.PosDrumAng));
+    float minDistance = fabs(angles[0] - Drive1.PosDrumAng);
     for (int i = 1; i < 3; i++) {
-        float distance = fabs(angleDifference(angles[i], Drive1.PosDrumAng));
+        float distance = fabs(angles[i] - Drive1.PosDrumAng);
         if (distance < minDistance) {
             minDistance = distance;
             minIndex = i;
         }
     }
 
-    // Возвращаем угол с минимальным расстоянием
     return angles[minIndex];
 }
 //============================================================================================
