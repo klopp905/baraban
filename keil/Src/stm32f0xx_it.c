@@ -281,7 +281,7 @@ void SysTick_Handler(void)
 				HAL_UART_AbortReceive_IT(&UART_HANDLER);											// остановка приема
 				firstByteWait = 1;																						// признак ожидание первого байта
 				firstByteWaitCnt = 0;
-				HAL_UART_Receive_IT (&UART_HANDLER, (uint8_t *)BufferRX, 1);	// запуск приема
+				StartRx(BufferRX);													// перезапуск протокола как после старта
 			}
 		}
 	
@@ -292,9 +292,12 @@ void SysTick_Handler(void)
 			if( confirmWaitCnt >= TIMEOUT_CONFIRM ) {
 				// ошибка таймаута
 				HAL_UART_AbortReceive_IT(&UART_HANDLER);											// остановка приема
+				ClrRegister(&StatusRegister);											// аварийно выходим из session
+				Packet.lengthRx = SIZE_COMMAND;										// возвращаем ожидание обычной команды
+				positionWait = 1;															// отменяем ожидание выполнения команды
 				confirmWait = 1;																							// признак ожидание квитирования
 				confirmWaitCnt = 0;
-				HAL_UART_Receive_IT (&UART_HANDLER, (uint8_t *)BufferRX, 1);	// запуск приема
+				StartRx(BufferRX);													// перезапуск протокола как после старта
 			}
 		}	
 	
