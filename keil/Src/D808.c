@@ -341,7 +341,7 @@ float angleDifference(float a, float b) {
 // Функция для поиска ближайшего к текущему положению угла
 float findNearestAngle(uint16_t adr) {
 
-    float target = (float)adr * Drive1.SectorSize;
+    float target = ((float)adr + 0.5f) * Drive1.SectorSize;
     float angles[3];
     angles[0] = target - 360.0f;
     angles[1] = target;
