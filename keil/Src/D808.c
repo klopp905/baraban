@@ -342,22 +342,12 @@ float angleDifference(float a, float b) {
 float findNearestAngle(uint16_t adr) {
 
     float target = ((float)adr + 0.5f) * Drive1.SectorSize;
-    float angles[3];
-    angles[0] = target - 360.0f;
-    angles[1] = target;
-    angles[2] = target + 360.0f;
+    float diff = target - Drive1.PosDrumAng;
 
-    int minIndex = 0;
-    float minDistance = fabs(angles[0] - Drive1.PosDrumAng);
-    for (int i = 1; i < 3; i++) {
-        float distance = fabs(angles[i] - Drive1.PosDrumAng);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minIndex = i;
-        }
-    }
+    if (diff >= 180.0f)        target -= 360.0f;
+    else if (diff < -180.0f)   target += 360.0f;
 
-    return angles[minIndex];
+    return target;
 }
 //============================================================================================
 
