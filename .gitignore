@@ -1,0 +1,12 @@
+# Всё внутри MDK-ARM
+keil/MDK-ARM/**
+
+# Разрешить папку MDK-ARM
+!keil/MDK-ARM/
+
+# Оставить *.uvprojx
+!keil/MDK-ARM/*.uvprojx
+
+# Оставить папку FreeMaster и всё внутри
+!keil/MDK-ARM/FreeMaster/
+!keil/MDK-ARM/FreeMaster/**

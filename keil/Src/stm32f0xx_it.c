@@ -257,6 +257,8 @@ void SysTick_Handler(void)
 									//ENA_OUT_OFF;																							// опустим ENA					
 				  
 									ClrBit(&StatusRegister, PRT_WAIT_ANS2);										// сбросим бит выполнения комманды для ANS2
+									positionWait = 1;
+									positionWaitCnt = 0;
 						
 									SetAnswer2(&Packet, PRT_ANS2_OK );												// формируем пакет с Ans2......................	
 																																						// из main, произойдет отправка PRT_ANS2_OK....					
