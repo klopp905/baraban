@@ -260,6 +260,29 @@ void  ClrRegister(uint8_t * reg)
 
 
 //====Установка значения флага==================================================
+//==============================================================================
+void Protocol_SetPhase(struct TPacket *packet, prt_phase_t phase)
+{
+	packet->phase = phase;
+
+	switch( phase )
+	{
+		case PRT_PHASE_WAIT_CONFIRM:
+			packet->lengthRx = SIZE_CONFIRMATION;
+			break;
+
+		case PRT_PHASE_IDLE:
+		case PRT_PHASE_WAIT_COMMAND:
+		case PRT_PHASE_WAIT_POSITION:
+		case PRT_PHASE_WAIT_ANS2_TX:
+		default:
+			packet->lengthRx = SIZE_COMMAND;
+			break;
+	}
+}
+//==============================================================================
+
+
 void  SetFlag(Tflag *flag, uint8_t value){
   
   //__disable_interrupt();  

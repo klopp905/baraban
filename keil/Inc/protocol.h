@@ -71,6 +71,15 @@ extern "C" {
 
 
 //-------------------------------------
+typedef enum
+{
+	PRT_PHASE_IDLE = 0,
+	PRT_PHASE_WAIT_COMMAND,
+	PRT_PHASE_WAIT_CONFIRM,
+	PRT_PHASE_WAIT_POSITION,
+	PRT_PHASE_WAIT_ANS2_TX
+} prt_phase_t;
+
 struct  TPacket{
 
 	uint8_t lengthRx; 	// количество байтов в пакете
@@ -78,6 +87,7 @@ struct  TPacket{
 	uint8_t *bufTx;			// указатель на буффер
 	uint8_t *sr;				// указатель на регистр ошибок
   uint8_t	sendReq;		// признак требования отправки
+	prt_phase_t phase;
 };
 
 
@@ -153,6 +163,7 @@ void	StartRx(uint8_t *buffer);
 
 void  StartSession(uint8_t *buffer);
 void  StopSession(uint8_t *buffer);
+void  Protocol_SetPhase(struct TPacket *packet, prt_phase_t phase);
 
 void  SetBit(uint8_t * reg, uint8_t bit);
 void  ClrBit(uint8_t * reg, uint8_t bit);

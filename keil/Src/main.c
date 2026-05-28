@@ -30,7 +30,7 @@ uint8_t BufferTX[5];			// на передачу
 uint8_t BufferRX[5];			// на прием
 uint8_t	StatusRegister = 0;
 
-struct	TPacket	Packet = {0, 0, BufferTX, &StatusRegister, 0};
+struct	TPacket	Packet = {0, 0, BufferTX, &StatusRegister, 0, PRT_PHASE_IDLE};
 
 
 //uint8_t dataReceived=0; 		// признак данное получено
