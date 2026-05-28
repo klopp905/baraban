@@ -620,8 +620,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 if( !crcOk )
                 {
                         // protocol mismatch
-                        Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
-                        StartRx(BufferRX);
+                        Protocol_ResetSession(&Packet, BufferRX);
                 }
 				// хороший
 				else

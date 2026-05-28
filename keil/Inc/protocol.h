@@ -164,6 +164,7 @@ void	StartRx(uint8_t *buffer);
 void  StartSession(uint8_t *buffer);
 void  StopSession(uint8_t *buffer);
 void  Protocol_SetPhase(struct TPacket *packet, prt_phase_t phase);
+void  Protocol_ResetSession(struct TPacket *packet, uint8_t *buffer);
 
 void  SetBit(uint8_t * reg, uint8_t bit);
 void  ClrBit(uint8_t * reg, uint8_t bit);

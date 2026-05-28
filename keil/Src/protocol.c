@@ -53,6 +53,8 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 {  
 
 		uint16_t	pos = 0;
+		extern uint32_t firstByteWaitCnt;
+		extern uint32_t confirmWaitCnt;
 	
 		// дешифрируем комманду или квитирование
 		switch( buffer[0] )
@@ -82,8 +84,7 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 		case PRT_CONF_OK: 
                 if( packet->phase != PRT_PHASE_WAIT_CONFIRM )
                 {
-                        Protocol_SetPhase(packet, PRT_PHASE_WAIT_COMMAND);
-                        StartRx(BufferRX);
+                        Protocol_ResetSession(packet, BufferRX);
                         break;
                 }
 
@@ -91,6 +92,10 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 				// переместить барабан в позицию
 
 				positionWait = 0;													// включим таймаут на ожидание позиции			
+				firstByteWait = 1;
+				firstByteWaitCnt = 0;
+				confirmWait = 1;
+				confirmWaitCnt = 0;
                 Protocol_SetPhase(packet, PRT_PHASE_WAIT_POSITION);
 		
 				SetBit(&StatusRegister, PRT_WAIT_ANS2);		// запуск выполнения комманды для ANS2											
@@ -101,8 +106,7 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 				// неизвестная комманда
 		
 				//---запуск приема первого байта пакета с коммандой---------
-                Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
-				StartRx(BufferRX);		
+                Protocol_ResetSession(&Packet, BufferRX);
 					
 		}
   
@@ -294,6 +298,28 @@ void Protocol_SetPhase(struct TPacket *packet, prt_phase_t phase)
 			packet->lengthRx = SIZE_COMMAND;
 			break;
 	}
+}
+//==============================================================================
+
+
+void Protocol_ResetSession(struct TPacket *packet, uint8_t *buffer)
+{
+	extern uint32_t firstByteWaitCnt;
+	extern uint32_t confirmWaitCnt;
+	extern uint32_t positionWaitCnt;
+
+	ClrRegister(&StatusRegister);
+	Protocol_SetPhase(packet, PRT_PHASE_WAIT_COMMAND);
+
+	firstByteWait = 1;
+	firstByteWaitCnt = 0;
+	confirmWait = 1;
+	confirmWaitCnt = 0;
+	positionWait = 1;
+	positionWaitCnt = 0;
+	packet->sendReq = 0;
+
+	StartRx(buffer);
 }
 //==============================================================================
 

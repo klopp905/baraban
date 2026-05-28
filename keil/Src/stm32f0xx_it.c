@@ -281,10 +281,7 @@ void SysTick_Handler(void)
 			if( firstByteWaitCnt >= TIMEOUT_FIRSTBYTE ) {
 				// ошибка таймаута
 				HAL_UART_AbortReceive_IT(&UART_HANDLER);											// остановка приема
-                Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
-				firstByteWait = 1;																						// признак ожидание первого байта
-				firstByteWaitCnt = 0;
-				StartRx(BufferRX);													// перезапуск протокола как после старта
+                Protocol_ResetSession(&Packet, BufferRX);
 			}
 		}
 	
@@ -295,12 +292,7 @@ void SysTick_Handler(void)
 			if( confirmWaitCnt >= TIMEOUT_CONFIRM ) {
 				// ошибка таймаута
 				HAL_UART_AbortReceive_IT(&UART_HANDLER);											// остановка приема
-				ClrRegister(&StatusRegister);											// аварийно выходим из session
-                Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
-				positionWait = 1;															// отменяем ожидание выполнения команды
-				confirmWait = 1;																							// признак ожидание квитирования
-				confirmWaitCnt = 0;
-				StartRx(BufferRX);													// перезапуск протокола как после старта
+                Protocol_ResetSession(&Packet, BufferRX);
 			}
 		}	
 	
