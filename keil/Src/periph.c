@@ -606,15 +606,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     else																				
 		{  
 				// контрольный байт плохой (для любого пакета)
-				if( !( ((BufferRX[0] ^ BufferRX[1] ^ BufferRX[2] ^ 0xE5) == BufferRX[3]) ||\
-						((BufferRX[0] ^ 0xE5) == BufferRX[1]) ) )
-				{
-						// отработка ошибки
-						// ...
-					
-						//---запуск приема первого байта пакета с коммандой----------------------------------------
-						StartRx(BufferRX);					
-				}
+                uint8_t crcOk = 0;
+
+                if( Packet.phase == PRT_PHASE_WAIT_COMMAND )
+                {
+                        crcOk = ((BufferRX[0] ^ BufferRX[1] ^ BufferRX[2] ^ 0xE5) == BufferRX[3]);
+                }
+                else if( Packet.phase == PRT_PHASE_WAIT_CONFIRM )
+                {
+                        crcOk = ((BufferRX[0] ^ 0xE5) == BufferRX[1]);
+                }
+
+                if( !crcOk )
+                {
+                        // protocol mismatch
+                        Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
+                        StartRx(BufferRX);
+                }
 				// хороший
 				else
 				{

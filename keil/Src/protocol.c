@@ -80,10 +80,18 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 
 		// квитирование
 		case PRT_CONF_OK: 
+                if( packet->phase != PRT_PHASE_WAIT_CONFIRM )
+                {
+                        Protocol_SetPhase(packet, PRT_PHASE_WAIT_COMMAND);
+                        StartRx(BufferRX);
+                        break;
+                }
+
 				// запуск выполнения комманды							// >>>>>  с последующей отправкой Ans2
 				// переместить барабан в позицию
 
 				positionWait = 0;													// включим таймаут на ожидание позиции			
+                Protocol_SetPhase(packet, PRT_PHASE_WAIT_POSITION);
 		
 				SetBit(&StatusRegister, PRT_WAIT_ANS2);		// запуск выполнения комманды для ANS2											
 
@@ -93,7 +101,7 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 				// неизвестная комманда
 		
 				//---запуск приема первого байта пакета с коммандой---------
-				Packet.lengthRx = SIZE_COMMAND;
+                Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
 				StartRx(BufferRX);		
 					
 		}
@@ -114,7 +122,14 @@ void  SetAnswer1(struct TPacket *packet, uint8_t ans, uint16_t data)
 		packet->bufTx[3] = packet->bufTx[0] ^ packet->bufTx[1] ^ packet->bufTx[2] ^ 0xE5;	
 	
 		packet->lengthTx = SIZE_ANS1;
-		packet->lengthRx = SIZE_CONFIRMATION;
+        if( ans == PRT_ANS1_ACCEPTED )
+        {
+                Protocol_SetPhase(packet, PRT_PHASE_WAIT_CONFIRM);
+        }
+        else
+        {
+                Protocol_SetPhase(packet, PRT_PHASE_WAIT_COMMAND);
+        }
 		packet->sendReq = 1;
   
 }
@@ -131,7 +146,7 @@ void  SetAnswer2(struct TPacket *packet, uint8_t ans)
 		packet->bufTx[1] = packet->bufTx[0] ^ 0xE5;		
 	
 		packet->lengthTx = SIZE_ANS2;
-		packet->lengthRx = SIZE_COMMAND;//SIZE_CONFIRMATION;//
+        Protocol_SetPhase(packet, PRT_PHASE_WAIT_ANS2_TX);
 		packet->sendReq = 1;
   
 }
@@ -220,7 +235,7 @@ void  StopSession(uint8_t *buffer)
 	
 		// размеры пакета в исходное состояние
 		Packet.lengthTx = SIZE_ANS1;
-		Packet.lengthRx = SIZE_COMMAND;	
+                Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
 	
 		// запуск приема первого байта пакета с коммандой	
 		StartRx(buffer);		

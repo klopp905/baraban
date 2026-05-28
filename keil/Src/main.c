@@ -101,7 +101,7 @@ int main(void)
 		UART_Config(&UART_HANDLER);
 		
 		//---запуск приема первого байта пакета с коммандой---------------------
-		Packet.lengthRx = SIZE_COMMAND;
+		Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
 		StartRx(BufferRX);			
 #endif	
 
@@ -174,6 +174,7 @@ else
 					
 						case	PRT_ANS1_ACCEPTED:
 						{
+							Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_CONFIRM);
 							confirmWait = 0;										//...запустим таймаут на квитирование............						
 						} break;
 						
@@ -182,7 +183,7 @@ else
 						case	PRT_ANS1_RESULT:
 						{
 								//...запуск приема первого байта пакета с коммандой..................................
-							Packet.lengthRx = SIZE_COMMAND;
+							Protocol_SetPhase(&Packet, PRT_PHASE_WAIT_COMMAND);
 							StartRx(BufferRX);						
 						} break;				
 
