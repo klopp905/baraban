@@ -106,7 +106,7 @@ void  MakeAnswer(struct TPacket *packet, uint8_t * buffer)
 				// неизвестная комманда
 		
 				//---запуск приема первого байта пакета с коммандой---------
-                Protocol_ResetSession(&Packet, BufferRX);
+                SetAnswer1(packet, PRT_ANS1_UNKNOWN, DUMMY);
 					
 		}
   

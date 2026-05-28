@@ -275,7 +275,8 @@ void SysTick_Handler(void)
 
 	
 		//---таймаут на обрыв между байтами----------------------------------------------------
-		if( firstByteWait != 0 )  firstByteWaitCnt = 0; 
+		if( Packet.phase == PRT_PHASE_WAIT_POSITION ) firstByteWaitCnt = 0;
+		else if( firstByteWait != 0 )  firstByteWaitCnt = 0; 
 		else {
 			firstByteWaitCnt++;
 			if( firstByteWaitCnt >= TIMEOUT_FIRSTBYTE ) {
@@ -286,7 +287,8 @@ void SysTick_Handler(void)
 		}
 	
 		//---таймаут на ожидание квитирования--------------------------------------------------
-		if( confirmWait != 0 )  confirmWaitCnt=0; 
+		if( Packet.phase == PRT_PHASE_WAIT_POSITION ) confirmWaitCnt = 0;
+		else if( confirmWait != 0 )  confirmWaitCnt=0; 
 		else {
 			confirmWaitCnt++;
 			if( confirmWaitCnt >= TIMEOUT_CONFIRM ) {

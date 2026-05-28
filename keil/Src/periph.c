@@ -20,6 +20,9 @@ extern  uint8_t dataTransmitted;
 //extern	uint8_t buf[6];
 //extern	uint8_t buf[5];
 extern	uint8_t firstByteWait;
+extern	uint8_t confirmWait;
+extern uint32_t firstByteWaitCnt;
+extern uint32_t confirmWaitCnt;
 //extern	struct answer;
 
 extern	uint8_t	flagSetStep;
@@ -594,6 +597,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 
   if(huart == &UART_HANDLER) {
+
+                if( Packet.phase == PRT_PHASE_WAIT_POSITION )
+                {
+                        firstByteWait = 1;
+                        firstByteWaitCnt = 0;
+                        confirmWait = 1;
+                        confirmWaitCnt = 0;
+                        return;
+                }
 
 		//---принят первый байт------------------------------------------------------------------------		
     if( firstByteWait != 0 )										
